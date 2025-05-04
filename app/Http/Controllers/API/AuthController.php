@@ -49,7 +49,6 @@ class AuthController extends Controller
     }
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string',
             'email' => 'required|email',/* memberikan error email has been already taken */
             'password' => 'required|min:6',
         ]);
@@ -87,4 +86,4 @@ class AuthController extends Controller
         ]);
     }
 }
-    
+
