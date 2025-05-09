@@ -14,4 +14,9 @@ class Order extends Model
         'quantity',
         'status_pembayaran'
     ];
+
+    public function menu()
+{
+    return $this->belongsTo(Menu::class, 'product_id');
+}
 }

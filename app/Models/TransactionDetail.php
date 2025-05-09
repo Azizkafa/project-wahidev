@@ -13,7 +13,7 @@ class TransactionDetail extends Model
     protected $table = 'transaction_details';
 
     // Tentukan kolom yang bisa diisi secara mass-assignment
-    protected $fillable = ['menus_id', 'note', 'transaction_id'];
+    protected $fillable = ['menus_id', 'note', 'transaction_id', 'quantity', 'price'];
 
     /**
      * Relasi ke tabel Menu (Many to One)

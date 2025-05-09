@@ -1,31 +1,41 @@
-use App\Models\Order;
-use App\Models\Menu;
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Transaction;
+use Carbon\Carbon;
 
-public function dashboard()
+class DashboardController extends Controller
 {
-    $totalOrders = Order::count();
-    $totalOmzet = Order::sum('total');
-    $ordersToday = Order::whereDate('created_at', today())->get();
 
-    // Menghitung omzet per kategori
-    $foodsOrders = Order::whereHas('menu', function($query) {
-        $query->where('category_id', 1); // Asumsi foods category ID 1
-    })->sum('total');
+    public function index(Request $request)
+    {
+        $tanggal = $request->query('tanggal', Carbon::today()->toDateString());
 
-    $beveragesOrders = Order::whereHas('menu', function($query) {
-        $query->where('category_id', 2); // Asumsi beverages category ID 2
-    })->sum('total');
+        $totalOrder = Order::whereDate('created_at', $tanggal)->count();
+        $totalOmzet = Transaction::whereDate('created_at', $tanggal)->sum('total');
 
-    $dessertsOrders = Order::whereHas('menu', function($query) {
-        $query->where('category_id', 3); // Asumsi desserts category ID 3
-    })->sum('total');
+        $menuSummary = [
+            'foods' => Order::whereHas('menu', fn($q) => $q->where('category_id', 1))
+                            ->whereDate('created_at', $tanggal)->count(),
+            'beverages' => Order::whereHas('menu', fn($q) => $q->where('category_id', 2))
+                            ->whereDate('created_at', $tanggal)->count(),
+            'desserts' => Order::whereHas('menu', fn($q) => $q->where('category_id', 3))
+                            ->whereDate('created_at', $tanggal)->count(),
+        ];
 
-    // Chart omzet
-    $chartData = Order::whereDate('created_at', today())
-                      ->selectRaw('HOUR(created_at) as hour, SUM(total) as omzet')
-                      ->groupBy('hour')
-                      ->get();
+        return response()->json([
+            'tanggal' => $tanggal,
+            'total_order' => $totalOrder,
+            'total_omzet' => $totalOmzet,
+            'menu_summary' => $menuSummary,
+        ]);
+    }
 
-    return view('dashboard', compact('totalOrders', 'totalOmzet', 'ordersToday', 'foodsOrders', 'beveragesOrders', 'dessertsOrders', 'chartData'));
 }
+
+
+

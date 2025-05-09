@@ -8,7 +8,8 @@ use App\Http\Controllers\API\MenuController;
 use App\Http\Controllers\API\OrderController;
 use App\Http\Controllers\API\TransactionController;
 use App\Http\Controllers\API\TransactionDetailController;
-
+use App\Http\Controllers\API\DashboardController;
+use App\Http\Controllers\API\ReportController;
 
 // register
 Route::post('/register', [AuthController::class, 'register']);
@@ -71,6 +72,12 @@ Route::post('transaction-details', [TransactionDetailController::class, 'store']
 Route::put('transaction-details/{id}', [TransactionDetailController::class, 'update']);
 Route::delete('transaction-details/{id}', [TransactionDetailController::class, 'destroy']);
 
+    // --- Route Dashboard ---
+    Route::get('/dashboard', [DashboardController::class, 'index']);
+
+    // --- Route Sales / Laporan Penjualan ---
+    Route::get('/report', [ReportController::class, 'index']);
+    Route::get('/report/{id}', [ReportController::class, 'show']);
 
 });
 

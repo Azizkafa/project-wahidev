@@ -42,7 +42,7 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token', [$user->role])->plainTextToken;
         //4. Lempar ke API
         return response()->json([
-            'message' => 'Register Berhasil',
+            'message' => 'Register Be   rhasil',
             'user' => $user,
             'token' => $token
         ]);
